@@ -1,0 +1,189 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Структура для збереження даних рейсу
+typedef struct {
+    char origin[20];
+    char destination[20];
+    char departure[10];
+    char arrival[10];
+} Flight;
+
+// Структура для збереження даних пасажира
+typedef struct {
+    char name[50];
+    char passport[20];
+    char phone[20];
+} Passenger;
+
+// Масив для збереження історії резервування квитків
+#define MAX_HISTORY_SIZE 100
+typedef struct {
+    Flight flight;
+    Passenger passenger;
+} Reservation;
+
+Reservation history[MAX_HISTORY_SIZE];
+int historyCount = 0;
+
+// Функція для вибору рейсу
+int chooseFlight() {
+    int flight;
+    
+    printf("Виберіть рейс:\n");
+    printf("1. Київ - Одеса\n");
+    printf("2. Київ - Ковель\n");
+    printf("3. Київ - Харків\n");
+    printf("4. Київ  - Львів\n");
+    printf("5. Київ  - Дніпро\n");
+    printf("6. Київ - Запоріжжя\n");
+    printf("7. Київ - Миколаїв\n");
+    printf("8. Київ - Івано-Франківськ\n");
+    printf("Ваш вибір: ");
+    scanf("%d", &flight);
+    
+    return flight;
+}
+
+// Функція для вибору місця
+int chooseSeat() {
+    int seat;
+    
+    printf("Виберіть номер місця (1-150): ");
+    scanf("%d", &seat);
+    
+    return seat;
+}
+
+// Функція для введення даних пасажира
+void enterPassengerDetails(Passenger *passenger) {
+    printf("Введіть дані пасажира:\n");
+    printf("Ім'я: ");
+    scanf("%s", passenger->name);
+    
+    printf("Номер паспорта: ");
+    scanf("%s", passenger->passport);
+
+    printf("Телефон: ");
+    scanf("%s", passenger->phone);
+}
+
+// Функція для додавання резервування до історії
+void addToHistory(Flight flight, Passenger passenger) {
+    if (historyCount < MAX_HISTORY_SIZE) {
+        Reservation reservation;
+        reservation.flight = flight;
+        reservation.passenger = passenger;
+        history[historyCount] = reservation;
+        historyCount++;
+    } else {
+        printf("Історія резервування квитків заповнена. Неможливо додати новий рейс.\n");
+    }
+}
+
+// Функція для виведення історії резервування квитків
+void printHistory() {
+    printf("Історія резервування квитків:\n");
+    
+    for (int i = 0; i < historyCount; i++) {
+        printf("Рейс %d: %s (Відправлення о %s, прибуття о %s)\n", i + 1, history[i].flight.destination, history[i].flight.departure, history[i].flight.arrival);
+        printf("   Ім'я: %s\n", history[i].passenger.name);
+        printf("   Номер паспорта: %s\n", history[i].passenger.passport);
+        printf("   Телефон: %s\n", history[i].passenger.phone);
+    }
+}
+// Функція для бронювання квитка
+void bookTicket() {
+    int flightNum, seatNum;
+    Passenger passenger;
+    
+    // Вибір рейсу
+    flightNum = chooseFlight();
+    
+    // Вибір місця
+    seatNum = chooseSeat();
+    
+    // Введення даних пасажира
+    enterPassengerDetails(&passenger);
+    
+    // Створення об'єкту рейсу
+    Flight flight;
+    switch (flightNum) {
+        case 1:
+            strcpy(flight.origin, "Київ");
+            strcpy(flight.destination, "Одеса");
+            strcpy(flight.departure, "09:30");
+            strcpy(flight.arrival, "17:00");
+            break;
+        case 2:
+            strcpy(flight.origin, "Київ");
+            strcpy(flight.destination, "Ковель");
+            strcpy(flight.departure, "16:00");
+            strcpy(flight.arrival, "02:55");
+            break;
+        case 3:
+            strcpy(flight.origin, "Київ");
+            strcpy(flight.destination, "Харків");
+            strcpy(flight.departure, "08:30");
+            strcpy(flight.arrival, "015:30");
+            break;
+        case 4:
+            strcpy(flight.origin, "Київ");
+            strcpy(flight.destination, "Львів");
+            strcpy(flight.departure, "16:00");
+            strcpy(flight.arrival, "05:30");
+            break;
+        case 5:
+            strcpy(flight.origin, "Київ");
+            strcpy(flight.destination, "Дніпро");
+            strcpy(flight.departure, "09:00");
+            strcpy(flight.arrival, "18:00");
+            break;
+        case 6:
+            strcpy(flight.origin, "Київ");
+            strcpy(flight.destination, "Запоріжжя");
+            strcpy(flight.departure, "10:30");
+            strcpy(flight.arrival, "20:00");
+            break;
+        case 7:
+            strcpy(flight.origin, "Київ");
+            strcpy(flight.destination, "Миколаїв");
+            strcpy(flight.departure, "11:00");
+            strcpy(flight.arrival, "23:30");
+            break;
+        case 8:
+            strcpy(flight.origin, "Київ");
+            strcpy(flight.destination, "Івано-Франківськ");
+            strcpy(flight.departure, "09:30");
+            strcpy(flight.arrival, "22:00");
+            break;
+        
+        default:
+            printf("Невірний номер рейсу.\n");
+            return;
+    }
+    
+    // Додавання резервування до історії
+    addToHistory(flight, passenger);
+    
+    // Виведення підтвердження
+    printf("\nБронювання успішно завершено!\n");
+    printf("Ім'я: %s\n", passenger.name);
+    printf("Номер паспорта: %s\n", passenger.passport);
+    printf("Телефон: %s\n", passenger.phone);
+    printf("Рейс: %d\n", flightNum);
+    printf("Місце: %d\n", seatNum);
+}
+
+int main() {
+    printf("Система бронювання квитків від Укрзалізниці\n");
+    
+    // Бронювання квитка
+    bookTicket();
+    
+    // Виведення історії резервування квитків
+    printHistory();
+    
+    return 0;
+}
